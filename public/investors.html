@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Runeteca Technologies — Investor Relations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg:#F5F2EC; --bg2:#EDE8DC; --bg3:#E3DDD0;
+      --card:#FFFFFF; --text:#0A0F1E; --text2:#2A3050; --text3:rgba(10,15,30,0.55);
+      --gold:#A07830; --gold-lt:#C9A84C; --gold-dk:#7A5A20;
+      --red:#C0392B; --red-dk:#8B1A0F;
+      --border:rgba(160,120,48,0.18);
+      --font-display:'Cinzel',serif; --font-body:'Crimson Pro',serif; --font-mono:'JetBrains Mono',monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:#0A0F1E; --bg2:#111827; --bg3:#1A2340;
+        --card:#1A2340; --text:#F5F2EC; --text2:rgba(245,242,236,0.75); --text3:rgba(245,242,236,0.45);
+        --gold:#C9A84C; --gold-lt:#E8C96A; --gold-dk:#A07830;
+        --border:rgba(201,168,76,0.15);
+      }
+    }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--text); font-family:var(--font-body); font-size:18px; line-height:1.7; overflow-x:hidden; }
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-track { background:var(--bg); }
+    ::-webkit-scrollbar-thumb { background:var(--gold); border-radius:3px; }
+
+    /* NAV */
+    nav { position:fixed; top:0; left:0; right:0; z-index:900; padding:0 48px; height:72px; display:flex; align-items:center; justify-content:space-between; background:rgba(10,15,30,0.95); backdrop-filter:blur(20px); border-bottom:1px solid rgba(201,168,76,0.2); }
+    .nav-logo { display:flex; align-items:center; gap:12px; text-decoration:none; }
+    .nav-logo-icon { width:36px; height:36px; }
+    .nav-logo-text { font-family:var(--font-display); font-size:18px; font-weight:700; letter-spacing:3px; color:#C9A84C; }
+    .nav-back { font-family:var(--font-mono); font-size:11px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.5); text-decoration:none; display:flex; align-items:center; gap:8px; transition:color 0.2s; }
+    .nav-back:hover { color:#C9A84C; }
+    .nav-cta-red { font-family:var(--font-mono); font-size:11px; letter-spacing:2px; text-transform:uppercase; background:var(--red); color:#fff; padding:10px 22px; text-decoration:none; transition:background 0.2s; }
+    .nav-cta-red:hover { background:#E04535; }
+
+    /* HERO — always dark */
+    .inv-hero { min-height:60vh; display:flex; align-items:center; background:#0A0F1E; position:relative; overflow:hidden; padding-top:72px; }
+    .inv-hero-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px); background-size:60px 60px; mask-image:radial-gradient(ellipse 100% 100% at 50% 50%,black 40%,transparent 100%); }
+    .inv-hero-red { position:absolute; top:0; left:0; bottom:0; width:4px; background:linear-gradient(to bottom,transparent,var(--red),transparent); opacity:0.6; }
+    .inv-hero-content { position:relative; z-index:10; padding:80px 48px; max-width:1200px; margin:0 auto; width:100%; }
+    .inv-confidential { font-family:var(--font-mono); font-size:9px; letter-spacing:4px; color:var(--red); text-transform:uppercase; border:1px solid rgba(192,57,43,0.4); display:inline-block; padding:5px 14px; margin-bottom:32px; }
+    .inv-eyebrow { font-family:var(--font-mono); font-size:10px; letter-spacing:5px; color:#C9A84C; text-transform:uppercase; opacity:0.8; margin-bottom:16px; display:block; }
+    .inv-title { font-family:var(--font-display); font-size:clamp(40px,6vw,72px); font-weight:900; letter-spacing:4px; background:linear-gradient(135deg,#E8C96A,#C9A84C,#A07830); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.05; margin-bottom:16px; }
+    .inv-subtitle { font-family:var(--font-display); font-size:clamp(14px,2vw,20px); letter-spacing:4px; color:rgba(255,255,255,0.35); margin-bottom:40px; }
+    .inv-desc { font-size:20px; color:rgba(255,255,255,0.65); line-height:1.85; max-width:680px; }
+    .inv-desc em { color:#C9A84C; font-style:italic; }
+    /* Red bottom border on hero */
+    .inv-hero::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--red),transparent); opacity:0.5; }
+
+    /* SECTIONS */
+    .section { padding:100px 0; }
+    .section-alt { background:var(--bg2); }
+    .container { max-width:1200px; margin:0 auto; padding:0 48px; }
+    .section-eyebrow { font-family:var(--font-mono); font-size:10px; letter-spacing:5px; color:var(--gold); text-transform:uppercase; opacity:0.85; display:block; margin-bottom:16px; }
+    .section-title { font-family:var(--font-display); font-size:clamp(28px,3.5vw,44px); font-weight:700; letter-spacing:2px; color:var(--text); margin-bottom:20px; }
+    .section-lead { font-size:19px; font-weight:300; color:var(--text3); line-height:1.85; max-width:600px; }
+    .gold-line { width:60px; height:2px; background:var(--gold); margin:20px 0; }
+    .red-line { width:36px; height:2px; background:var(--red); margin:8px 0 20px; }
+
+    /* KEY STATS */
+    .key-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; margin-top:56px; }
+    .key-stat { background:var(--card); border:1px solid var(--border); padding:36px 28px; position:relative; }
+    .key-stat::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--gold-dk),var(--gold-lt)); }
+    .key-stat.red-top::before { background:linear-gradient(90deg,var(--red-dk),var(--red)); }
+    .key-stat-num { font-family:var(--font-display); font-size:44px; font-weight:700; color:var(--gold); line-height:1; margin-bottom:8px; }
+    .key-stat-num.red { color:var(--red); }
+    .key-stat-label { font-family:var(--font-mono); font-size:9px; letter-spacing:2px; color:var(--text3); text-transform:uppercase; line-height:1.5; }
+
+    /* OPPORTUNITY GRID */
+    .opp-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; margin-top:56px; }
+    .opp-card { background:var(--card); border:1px solid var(--border); padding:40px 36px; transition:transform 0.3s; position:relative; overflow:hidden; }
+    .opp-card:hover { transform:translateY(-4px); }
+    .opp-card::after { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--gold); transform:scaleY(0); transform-origin:bottom; transition:transform 0.3s; }
+    .opp-card:hover::after { transform:scaleY(1); }
+    .opp-card.red-card::after { background:var(--red); }
+    .opp-icon { font-size:28px; margin-bottom:16px; }
+    .opp-card h4 { font-family:var(--font-display); font-size:14px; letter-spacing:2px; color:var(--gold); margin-bottom:12px; }
+    .opp-card.red-card h4 { color:var(--red); }
+    .opp-card p { font-size:16px; color:var(--text3); line-height:1.75; }
+
+    /* MARKET SECTION */
+    .market-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; margin-top:56px; }
+    .market-visual { display:flex; flex-direction:column; gap:16px; }
+    .market-bar-item { display:flex; flex-direction:column; gap:6px; }
+    .market-bar-label { display:flex; justify-content:space-between; }
+    .market-bar-label span:first-child { font-family:var(--font-mono); font-size:10px; letter-spacing:2px; color:var(--text2); text-transform:uppercase; }
+    .market-bar-label span:last-child { font-family:var(--font-display); font-size:13px; font-weight:700; color:var(--gold); }
+    .market-bar-track { height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+    .market-bar-fill { height:100%; border-radius:3px; }
+    .bar-gold { background:linear-gradient(90deg,var(--gold-dk),var(--gold-lt)); }
+    .bar-red { background:linear-gradient(90deg,var(--red-dk),var(--red)); }
+
+    /* ROADMAP */
+    .roadmap { display:flex; flex-direction:column; gap:0; margin-top:56px; }
+    .roadmap-item { display:grid; grid-template-columns:140px 1fr; gap:40px; padding:32px 0; border-bottom:1px solid var(--border); align-items:start; }
+    .roadmap-item:last-child { border-bottom:none; }
+    .roadmap-phase { font-family:var(--font-mono); font-size:10px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; padding-top:4px; }
+    .roadmap-phase.red { color:var(--red); }
+    .roadmap-content h4 { font-family:var(--font-display); font-size:16px; letter-spacing:1px; color:var(--text); margin-bottom:8px; }
+    .roadmap-content p { font-size:15px; color:var(--text3); line-height:1.7; }
+    .roadmap-tag { display:inline-block; font-family:var(--font-mono); font-size:9px; letter-spacing:2px; text-transform:uppercase; padding:3px 10px; margin-bottom:10px; }
+    .tag-done { background:rgba(46,125,50,0.12); color:#4CAF50; border:1px solid rgba(46,125,50,0.25); }
+    .tag-now { background:rgba(192,57,43,0.12); color:var(--red); border:1px solid rgba(192,57,43,0.25); }
+    .tag-next { background:rgba(160,120,48,0.1); color:var(--gold); border:1px solid var(--border); }
+
+    /* FINANCIALS */
+    .fin-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; margin-top:56px; }
+    .fin-card { background:var(--card); border:1px solid var(--border); padding:40px 36px; }
+    .fin-card h4 { font-family:var(--font-display); font-size:14px; letter-spacing:2px; color:var(--gold); margin-bottom:20px; }
+    .fin-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border); }
+    .fin-row:last-child { border-bottom:none; }
+    .fin-row-label { font-family:var(--font-mono); font-size:11px; letter-spacing:1px; color:var(--text3); }
+    .fin-row-val { font-family:var(--font-display); font-size:16px; font-weight:600; color:var(--text); }
+    .fin-row-val.gold { color:var(--gold); }
+    .fin-row-val.red { color:var(--red); }
+
+    /* CTA SECTION */
+    .cta-section { background:#0A0F1E; padding:100px 0; position:relative; overflow:hidden; }
+    .cta-section::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(192,57,43,0.08) 0%,transparent 60%); }
+    .cta-section::after { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,var(--red),transparent); }
+    .cta-inner { position:relative; text-align:center; max-width:700px; margin:0 auto; }
+    .cta-inner .section-eyebrow { color:#C9A84C; }
+    .cta-inner .section-title { color:#F5F2EC; }
+    .cta-inner .section-lead { color:rgba(245,242,236,0.6); margin:0 auto 48px; }
+    .cta-actions { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; }
+
+    /* BUTTONS */
+    .btn-gold { font-family:var(--font-mono); font-size:12px; letter-spacing:3px; text-transform:uppercase; background:#C9A84C; color:#0A0F1E; padding:18px 40px; text-decoration:none; font-weight:500; transition:background 0.25s; display:inline-block; }
+    .btn-gold:hover { background:#E8C96A; }
+    .btn-red { font-family:var(--font-mono); font-size:12px; letter-spacing:3px; text-transform:uppercase; background:var(--red); color:#fff; padding:18px 40px; text-decoration:none; font-weight:500; transition:background 0.25s; display:inline-block; }
+    .btn-red:hover { background:#E04535; }
+    .btn-outline { font-family:var(--font-mono); font-size:12px; letter-spacing:3px; text-transform:uppercase; background:transparent; color:#C9A84C; padding:17px 40px; text-decoration:none; border:1px solid rgba(201,168,76,0.5); transition:all 0.25s; display:inline-block; }
+    .btn-outline:hover { border-color:#C9A84C; background:rgba(201,168,76,0.1); }
+
+    /* FOOTER */
+    footer { background:#050810; border-top:1px solid rgba(201,168,76,0.12); padding:48px 0 32px; }
+    .footer-bottom { display:flex; justify-content:space-between; align-items:center; }
+    .footer-bottom p { font-family:var(--font-mono); font-size:9px; letter-spacing:2px; color:rgba(255,255,255,0.2); text-transform:uppercase; }
+    .footer-rune { font-family:var(--font-display); font-size:13px; letter-spacing:4px; color:rgba(201,168,76,0.25); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.7s ease,transform 0.7s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .d1{transition-delay:0.1s} .d2{transition-delay:0.2s} .d3{transition-delay:0.3s} .d4{transition-delay:0.4s}
+
+    .inv-hero-content > * { animation:fadeUp 0.8s ease both; }
+    .inv-hero-content > *:nth-child(2){animation-delay:0.1s}
+    .inv-hero-content > *:nth-child(3){animation-delay:0.2s}
+    .inv-hero-content > *:nth-child(4){animation-delay:0.3s}
+    .inv-hero-content > *:nth-child(5){animation-delay:0.4s}
+
+    @media(max-width:960px){
+      nav{padding:0 24px;} .container{padding:0 24px;}
+      .key-stats,.opp-grid,.market-grid,.fin-grid{grid-template-columns:1fr;}
+      .roadmap-item{grid-template-columns:1fr;gap:8px;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="runeteca_v2.html" class="nav-logo">
+    <svg class="nav-logo-icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#E8C96A"/><stop offset="100%" style="stop-color:#A07830"/></linearGradient></defs>
+      <path d="M52,18 L148,18 L172,42 L172,118 L100,178 L28,118 L28,42 Z" fill="#1A2340" stroke="url(#ng)" stroke-width="3"/>
+      <line x1="100" y1="148" x2="100" y2="56" stroke="url(#ng)" stroke-width="5"/>
+      <line x1="100" y1="78" x2="74" y2="102" stroke="url(#ng)" stroke-width="5"/>
+      <line x1="100" y1="78" x2="126" y2="102" stroke="url(#ng)" stroke-width="5"/>
+      <polygon points="100,50 93,64 107,64" fill="url(#ng)"/>
+      <path d="M86,162 L100,178 L114,162 Z" fill="#C0392B"/>
+    </svg>
+    <span class="nav-logo-text">RUNETECA</span>
+  </a>
+  <a href="runeteca_v2.html" class="nav-back">← Back to Main Site</a>
+  <a href="mailto:investors@runeteca.com" class="nav-cta-red">Request Deck</a>
+</nav>
+
+<!-- HERO -->
+<div class="inv-hero">
+  <div class="inv-hero-grid"></div>
+  <div class="inv-hero-red"></div>
+  <div class="inv-hero-content">
+    <div class="inv-confidential">● Confidential — For Qualified Investors Only</div>
+    <span class="inv-eyebrow">Investor Relations</span>
+    <h1 class="inv-title">The AI Layer<br/>Business Missed Calls Need</h1>
+    <p class="inv-subtitle">Runeteca Technologies LLC — 2025</p>
+    <p class="inv-desc">We're building AI automation systems that turn missed calls into captured revenue. Starting with trucking — a <em>$900B industry</em> with a measurable, daily problem — and expanding into every service business that runs on the phone.</p>
+  </div>
+</div>
+
+<!-- KEY METRICS -->
+<section class="section" style="background:var(--bg);">
+  <div class="container">
+    <span class="section-eyebrow reveal">The Numbers</span>
+    <h2 class="section-title reveal">Why This Market, Why Now</h2>
+    <div class="gold-line reveal"></div>
+    <div class="key-stats">
+      <div class="key-stat reveal"><div class="key-stat-num">$900B</div><div class="key-stat-label">US Trucking Industry TAM</div></div>
+      <div class="key-stat red-top reveal d1"><div class="key-stat-num red">62%</div><div class="key-stat-label">Callers who won't leave voicemail</div></div>
+      <div class="key-stat reveal d2"><div class="key-stat-num">500K+</div><div class="key-stat-label">US Motor Carriers (SAM)</div></div>
+      <div class="key-stat red-top reveal d3"><div class="key-stat-num red">$4K+</div><div class="key-stat-label">Average value of a missed load</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- OPPORTUNITY -->
+<section class="section section-alt">
+  <div class="container">
+    <span class="section-eyebrow reveal">The Opportunity</span>
+    <h2 class="section-title reveal">Six Reasons Runeteca Wins</h2>
+    <div class="gold-line reveal"></div>
+    <div class="red-line reveal"></div>
+    <div class="opp-grid">
+      <div class="opp-card reveal"><div class="opp-icon">📞</div><h4>Proven, Immediate Problem</h4><p>Trucking companies lose loads every single day from missed calls. This isn't a theoretical pain point — it's a measurable revenue loss that every dispatcher knows firsthand. The problem solves itself when demonstrated.</p></div>
+      <div class="opp-card red-card reveal d1"><div class="opp-icon">🚀</div><h4>Beachhead to Platform</h4><p>Loadhalla enters through trucking — clear problem, clear buyer, clear ROI. Callhalla expands to all service businesses. Leadhalla and Flowhalla extend the platform. Each product shares 80% of the same infrastructure.</p></div>
+      <div class="opp-card red-card reveal d2"><div class="opp-icon">🔒</div><h4>Self-Reinforcing Retention</h4><p>Churn is self-punishing. Any business that cancels immediately starts losing opportunities again. The product creates dependency through demonstrated, measurable ROI. This drives best-in-class net revenue retention.</p></div>
+      <div class="opp-card reveal d3"><div class="opp-icon">⚡</div><h4>Capital Efficient Architecture</h4><p>Built on Next.js, Supabase, Twilio, and OpenAI APIs. Infrastructure costs remain flat as revenue scales. One engineer can maintain the platform serving thousands of businesses simultaneously.</p></div>
+      <div class="opp-card reveal"><div class="opp-icon">🎯</div><h4>Clear Path to $1M+ ARR</h4><p>500 customers at $197/mo = $1.18M ARR. The US trucking market has 500,000+ carriers — that's a 0.1% capture rate. Achievable in year one with focused outreach and product-led growth.</p></div>
+      <div class="opp-card red-card reveal d1"><div class="opp-icon">🏆</div><h4>Strategic Acquisition Target</h4><p>The SaaS model, recurring revenue, vertical-specific data moat, and platform architecture make Runeteca highly attractive to larger telecom, CRM, TMS, and logistics technology players.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKET SIZE -->
+<section class="section" style="background:var(--bg);">
+  <div class="container">
+    <span class="section-eyebrow reveal">Market Sizing</span>
+    <h2 class="section-title reveal">TAM / SAM / SOM</h2>
+    <div class="gold-line reveal"></div>
+    <div class="market-grid">
+      <div>
+        <p style="font-size:18px;color:var(--text3);line-height:1.9;margin-bottom:28px;" class="reveal">We enter through the most clearly defined segment first — US trucking carriers — where the problem is universal, the buyer is identifiable, and the ROI is immediate. Expansion into broader service verticals multiplies the addressable market by 50x+.</p>
+        <p style="font-size:18px;color:var(--text3);line-height:1.9;" class="reveal">The missed call problem isn't unique to trucking. Every HVAC company, dental practice, law firm, and auto repair shop faces the same pain. The platform is the same. Only the AI conversation templates differ.</p>
+      </div>
+      <div class="market-visual reveal d2">
+        <div class="market-bar-item">
+          <div class="market-bar-label"><span>TAM — All Service Businesses</span><span>$28B+</span></div>
+          <div class="market-bar-track"><div class="market-bar-fill bar-gold" style="width:100%;"></div></div>
+        </div>
+        <div class="market-bar-item">
+          <div class="market-bar-label"><span>SAM — US Trucking Carriers</span><span>$1.2B</span></div>
+          <div class="market-bar-track"><div class="market-bar-fill bar-gold" style="width:60%;"></div></div>
+        </div>
+        <div class="market-bar-item">
+          <div class="market-bar-label"><span>SOM — Year 1 Target</span><span>$1.2M</span></div>
+          <div class="market-bar-track"><div class="market-bar-fill bar-red" style="width:12%;"></div></div>
+        </div>
+        <div class="market-bar-item" style="margin-top:12px;">
+          <div class="market-bar-label"><span>SAM — All Service SMBs</span><span>$56B</span></div>
+          <div class="market-bar-track"><div class="market-bar-fill bar-gold" style="width:85%;opacity:0.5;"></div></div>
+        </div>
+        <p style="font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text3);margin-top:16px;text-transform:uppercase;">Based on $197/mo ARPU × addressable businesses</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT ROADMAP -->
+<section class="section section-alt">
+  <div class="container">
+    <span class="section-eyebrow reveal">Product Roadmap</span>
+    <h2 class="section-title reveal">Phased Platform Expansion</h2>
+    <div class="gold-line reveal"></div>
+    <div class="roadmap">
+      <div class="roadmap-item reveal">
+        <div class="roadmap-phase red">Now<br/>Q1 2025</div>
+        <div class="roadmap-content">
+          <span class="roadmap-tag tag-now">● In Progress</span>
+          <h4>Loadhalla MVP — Trucking</h4>
+          <p>Core missed call → SMS → AI conversation → load capture → dispatcher notification loop. Full Supabase schema deployed. Twilio webhook and AI engine built. Pending 10DLC registration and first live test.</p>
+        </div>
+      </div>
+      <div class="roadmap-item reveal">
+        <div class="roadmap-phase">Q2 2025</div>
+        <div class="roadmap-content">
+          <span class="roadmap-tag tag-next">Next</span>
+          <h4>Loadhalla Dashboard & Beta Launch</h4>
+          <p>Dispatcher dashboard with conversation history, load pipeline management, and analytics. Beta launch to first 10 trucking companies. Targeting 3 paying customers by end of Q2.</p>
+        </div>
+      </div>
+      <div class="roadmap-item reveal">
+        <div class="roadmap-phase">Q3 2025</div>
+        <div class="roadmap-content">
+          <span class="roadmap-tag tag-next">Planned</span>
+          <h4>Callhalla Launch — Service Businesses</h4>
+          <p>Repackage core engine for HVAC, dental, legal, auto repair, and other service verticals. Industry-specific conversation templates. Launch to first 50 combined customers across both products.</p>
+        </div>
+      </div>
+      <div class="roadmap-item reveal">
+        <div class="roadmap-phase">Q4 2025</div>
+        <div class="roadmap-content">
+          <span class="roadmap-tag tag-next">Planned</span>
+          <h4>$1M ARR Milestone & Series A Prep</h4>
+          <p>500+ customers across Loadhalla and Callhalla. Full analytics suite. Leadhalla and Flowhalla in development. Series A fundraise targeting $3-5M to accelerate sales and engineering.</p>
+        </div>
+      </div>
+      <div class="roadmap-item reveal">
+        <div class="roadmap-phase">2026</div>
+        <div class="roadmap-content">
+          <span class="roadmap-tag tag-next">Vision</span>
+          <h4>Full Halla Platform — Leadhalla & Flowhalla</h4>
+          <p>Complete platform offering across 4 products. Enterprise contracts with multi-location operators. Potential strategic acquisition discussions with CRM, TMS, or telecom partners.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINANCIALS -->
+<section class="section" style="background:var(--bg);">
+  <div class="container">
+    <span class="section-eyebrow reveal">Financial Projections</span>
+    <h2 class="section-title reveal">Path to Profitability</h2>
+    <div class="gold-line reveal"></div>
+    <p class="section-lead reveal" style="margin-bottom:48px;">Conservative projections based on $197/mo average ARPU, 5% monthly churn, and organic + direct sales growth. Infrastructure costs remain near-flat due to API-based architecture.</p>
+    <div class="fin-grid">
+      <div class="fin-card reveal">
+        <h4>Year 1 Projections</h4>
+        <div class="fin-row"><span class="fin-row-label">Customers (EOY)</span><span class="fin-row-val gold">500</span></div>
+        <div class="fin-row"><span class="fin-row-label">ARPU</span><span class="fin-row-val">$197 / mo</span></div>
+        <div class="fin-row"><span class="fin-row-label">ARR (EOY)</span><span class="fin-row-val gold">$1.18M</span></div>
+        <div class="fin-row"><span class="fin-row-label">Monthly Churn Target</span><span class="fin-row-val">&lt;5%</span></div>
+        <div class="fin-row"><span class="fin-row-label">Gross Margin (est.)</span><span class="fin-row-val gold">~78%</span></div>
+        <div class="fin-row"><span class="fin-row-label">Break-even</span><span class="fin-row-val">~150 customers</span></div>
+      </div>
+      <div class="fin-card reveal d1">
+        <h4>Unit Economics</h4>
+        <div class="fin-row"><span class="fin-row-label">Monthly Revenue / Customer</span><span class="fin-row-val gold">$197</span></div>
+        <div class="fin-row"><span class="fin-row-label">Twilio Cost / Customer</span><span class="fin-row-val">~$8</span></div>
+        <div class="fin-row"><span class="fin-row-label">OpenAI Cost / Customer</span><span class="fin-row-val">~$12</span></div>
+        <div class="fin-row"><span class="fin-row-label">Gross Profit / Customer</span><span class="fin-row-val gold">~$177</span></div>
+        <div class="fin-row"><span class="fin-row-label">LTV (at 20mo avg)</span><span class="fin-row-val gold">~$3,940</span></div>
+        <div class="fin-row"><span class="fin-row-label">Est. CAC (direct outreach)</span><span class="fin-row-val red">&lt;$200</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="container">
+    <div class="cta-inner">
+      <span class="section-eyebrow reveal">Next Steps</span>
+      <h2 class="section-title reveal">Ready to Learn More?</h2>
+      <div class="gold-line reveal" style="margin:20px auto;"></div>
+      <p class="section-lead reveal">Request our full pitch deck, financial model, and technical architecture overview. We're actively seeking strategic angel investors and seed-stage capital.</p>
+      <div class="cta-actions reveal">
+        <a href="mailto:investors@runeteca.com" class="btn-red">Request Full Deck</a>
+        <a href="runeteca_v2.html" class="btn-outline">Back to Main Site</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom">
+      <p>© 2025 Runeteca Technologies LLC — Confidential Investor Materials</p>
+      <span class="footer-rune">ᛏ ᚱ ᚢ ᚾ</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold:0.1, rootMargin:'0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Animate market bars on scroll
+  const bars = document.querySelectorAll('.market-bar-fill');
+  const barObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting) { e.target.style.transition='width 1.2s ease'; }
+    });
+  }, { threshold:0.5 });
+  bars.forEach(b => { const w = b.style.width; b.style.width='0'; barObserver.observe(b); setTimeout(()=>{ b.style.width=w; }, 300); });
+</script>
+</body>
+</html>

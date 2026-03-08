@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Runeteca Technologies — AI Automation Systems</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    /* ── LIGHT MODE TOKENS ── */
+    :root {
+      --bg:       #F5F2EC;
+      --bg2:      #EDE8DC;
+      --bg3:      #E3DDD0;
+      --surface:  #FFFFFF;
+      --navy:     #0A0F1E;
+      --navy2:    #1A2340;
+      --text:     #0A0F1E;
+      --text2:    #2A3050;
+      --text3:    rgba(10,15,30,0.55);
+      --gold:     #A07830;
+      --gold-lt:  #C9A84C;
+      --gold-dk:  #7A5A20;
+      --red:      #C0392B;
+      --red-dk:   #8B1A0F;
+      --white:    #FFFFFF;
+      --border:   rgba(160,120,48,0.2);
+      --card:     #FFFFFF;
+      --hero-bg:  #0A0F1E;
+      --hero-text:#FFFFFF;
+      --font-display:'Cinzel',serif;
+      --font-body:'Crimson Pro',serif;
+      --font-mono:'JetBrains Mono',monospace;
+    }
+
+    /* ── DARK MODE TOKENS ── */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:       #0A0F1E;
+        --bg2:      #111827;
+        --bg3:      #1A2340;
+        --surface:  #1E2A4A;
+        --text:     #F5F2EC;
+        --text2:    rgba(245,242,236,0.75);
+        --text3:    rgba(245,242,236,0.45);
+        --gold:     #C9A84C;
+        --gold-lt:  #E8C96A;
+        --gold-dk:  #A07830;
+        --red:      #C0392B;
+        --red-dk:   #7B1A10;
+        --border:   rgba(201,168,76,0.18);
+        --card:     #1A2340;
+        --hero-bg:  #0A0F1E;
+        --hero-text:#F5F2EC;
+      }
+    }
+
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--text); font-family:var(--font-body); font-size:18px; line-height:1.7; overflow-x:hidden; transition:background 0.3s, color 0.3s; }
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-track { background:var(--bg); }
+    ::-webkit-scrollbar-thumb { background:var(--gold); border-radius:3px; }
+
+    /* ── FIXED SCROLL INDICATOR ── */
+    .scroll-fixed {
+      position:fixed;
+      right:32px;
+      top:50%;
+      transform:translateY(-50%);
+      z-index:800;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+      opacity:1;
+      transition:opacity 0.4s ease;
+    }
+    .scroll-fixed.hidden { opacity:0; pointer-events:none; }
+    .scroll-fixed-label {
+      font-family:var(--font-mono);
+      font-size:8px;
+      letter-spacing:3px;
+      color:var(--gold);
+      text-transform:uppercase;
+      writing-mode:vertical-rl;
+      opacity:0.6;
+    }
+    .scroll-fixed-line {
+      width:1px;
+      height:60px;
+      background:linear-gradient(var(--gold), transparent);
+      animation:scrollPulse 2s ease infinite;
+    }
+    .scroll-fixed-dot {
+      width:5px;
+      height:5px;
+      border-radius:50%;
+      background:var(--red);
+      border:1px solid var(--gold);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:900;
+      padding:0 48px; height:72px;
+      display:flex; align-items:center; justify-content:space-between;
+      background:rgba(10,15,30,0.88); backdrop-filter:blur(20px);
+      border-bottom:1px solid rgba(201,168,76,0.15);
+      transition:all 0.3s ease;
+    }
+    nav.scrolled { border-bottom-color:rgba(201,168,76,0.35); }
+    @media (prefers-color-scheme: light) {
+      nav { background:rgba(10,15,30,0.95); }
+    }
+    .nav-logo { display:flex; align-items:center; gap:12px; text-decoration:none; }
+    .nav-logo-icon { width:36px; height:36px; }
+    .nav-logo-text { font-family:var(--font-display); font-size:18px; font-weight:700; letter-spacing:3px; color:#C9A84C; }
+    .nav-links { display:flex; align-items:center; gap:36px; list-style:none; }
+    .nav-links a { font-family:var(--font-mono); font-size:11px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.6); text-decoration:none; transition:color 0.2s; position:relative; }
+    .nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:1px; background:#C9A84C; transition:width 0.3s; }
+    .nav-links a:hover { color:#C9A84C; }
+    .nav-links a:hover::after { width:100%; }
+    .nav-cta { color:var(--navy) !important; background:#C9A84C !important; padding:10px 22px; border-bottom:none !important; }
+    .nav-cta:hover { background:#E8C96A !important; }
+    .nav-cta::after { display:none !important; }
+
+    /* ── HERO (always dark) ── */
+    #hero {
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      position:relative; overflow:hidden;
+      background:var(--hero-bg);
+    }
+    .hero-bg { position:absolute; inset:0; }
+    .hero-grid {
+      position:absolute; inset:0;
+      background-image:linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px);
+      background-size:60px 60px;
+      mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);
+    }
+    /* Red diagonal accent */
+    .hero-red-slash {
+      position:absolute; top:0; right:15%; width:3px; height:100%;
+      background:linear-gradient(to bottom, transparent, var(--red), transparent);
+      opacity:0.3; transform:skewX(-8deg);
+    }
+    .hero-red-slash2 {
+      position:absolute; top:0; right:20%; width:1px; height:100%;
+      background:linear-gradient(to bottom, transparent, rgba(192,57,43,0.4), transparent);
+      opacity:0.5; transform:skewX(-8deg);
+    }
+    .hero-rune { position:absolute; font-family:var(--font-display); color:rgba(201,168,76,0.05); font-size:200px; font-weight:900; user-select:none; pointer-events:none; }
+    .hero-rune-1 { top:10%; left:-2%; }
+    .hero-rune-2 { bottom:5%; right:-2%; font-size:160px; }
+    .hero-content { position:relative; z-index:10; text-align:center; max-width:900px; padding:72px 24px 0; }
+    .hero-eyebrow { font-family:var(--font-mono); font-size:11px; letter-spacing:5px; text-transform:uppercase; color:#C9A84C; opacity:0.85; margin-bottom:32px; animation:fadeUp 0.8s ease both; }
+    .hero-title { font-family:var(--font-display); font-size:clamp(52px,8vw,96px); font-weight:900; letter-spacing:6px; line-height:1.0; background:linear-gradient(135deg,#E8C96A 0%,#C9A84C 50%,#A07830 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:8px; animation:fadeUp 0.8s 0.1s ease both; }
+    .hero-subtitle { font-family:var(--font-display); font-size:clamp(14px,2vw,18px); letter-spacing:8px; color:rgba(255,255,255,0.4); margin-bottom:40px; animation:fadeUp 0.8s 0.2s ease both; }
+    .hero-divider { width:80px; height:2px; background:linear-gradient(90deg,transparent,#C9A84C,transparent); margin:0 auto 40px; animation:fadeUp 0.8s 0.3s ease both; }
+    .hero-desc { font-size:clamp(18px,2.5vw,22px); font-weight:300; color:rgba(255,255,255,0.72); line-height:1.8; max-width:660px; margin:0 auto 56px; animation:fadeUp 0.8s 0.4s ease both; }
+    .hero-desc em { color:#C9A84C; font-style:italic; }
+    /* Red underline accent on key phrase */
+    .hero-desc strong { color:#fff; font-weight:400; border-bottom:2px solid var(--red); padding-bottom:1px; }
+    .hero-actions { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; animation:fadeUp 0.8s 0.5s ease both; }
+    /* Red accent line below hero buttons */
+    .hero-accent-line {
+      width:120px; height:1px; margin:32px auto 0;
+      background:linear-gradient(90deg, transparent, var(--red), transparent);
+      animation:fadeUp 0.8s 0.7s ease both;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-primary { font-family:var(--font-mono); font-size:12px; letter-spacing:3px; text-transform:uppercase; background:#C9A84C; color:#0A0F1E; padding:18px 40px; text-decoration:none; font-weight:500; transition:background 0.25s; display:inline-block; }
+    .btn-primary:hover { background:#E8C96A; }
+    .btn-secondary { font-family:var(--font-mono); font-size:12px; letter-spacing:3px; text-transform:uppercase; background:transparent; color:#C9A84C; padding:17px 40px; text-decoration:none; border:1px solid rgba(201,168,76,0.5); transition:all 0.25s; }
+    .btn-secondary:hover { border-color:#C9A84C; background:rgba(201,168,76,0.1); }
+    .btn-red { font-family:var(--font-mono); font-size:12px; letter-spacing:3px; text-transform:uppercase; background:var(--red); color:#fff; padding:18px 40px; text-decoration:none; font-weight:500; transition:background 0.25s; display:inline-block; }
+    .btn-red:hover { background:#E04535; }
+
+    /* ── SECTIONS ── */
+    .section-dark { background:var(--bg); padding:120px 0; }
+    .section-alt  { background:var(--bg2); padding:120px 0; }
+    .section-card { background:var(--bg3); padding:120px 0; }
+
+    /* Dark-always sections (stats, hero overlaps) */
+    .section-always-dark { background:#0A0F1E; padding:80px 0; }
+    @media (prefers-color-scheme: light) {
+      .section-always-dark { background:#0A0F1E; }
+    }
+
+    .container { max-width:1200px; margin:0 auto; padding:0 48px; }
+    .section-eyebrow { font-family:var(--font-mono); font-size:10px; letter-spacing:5px; text-transform:uppercase; color:var(--gold); margin-bottom:20px; opacity:0.85; display:block; }
+    .section-title { font-family:var(--font-display); font-size:clamp(30px,4vw,50px); font-weight:700; letter-spacing:2px; line-height:1.15; margin-bottom:20px; color:var(--text); }
+    .section-lead { font-size:19px; font-weight:300; line-height:1.85; color:var(--text3); max-width:580px; }
+    .gold-line { width:60px; height:2px; background:var(--gold); margin:24px 0; }
+    .red-line { width:40px; height:2px; background:var(--red); margin:8px 0 24px; }
+
+    /* ── STATS (always dark) ── */
+    .stats-bar { background:#0D1220; border-top:1px solid rgba(192,57,43,0.25); border-bottom:1px solid rgba(201,168,76,0.15); padding:64px 0; }
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); }
+    .stat-item { text-align:center; padding:0 32px; border-right:1px solid rgba(201,168,76,0.1); }
+    .stat-item:last-child { border-right:none; }
+    .stat-number { font-family:var(--font-display); font-size:52px; font-weight:700; color:#C9A84C; line-height:1; margin-bottom:8px; }
+    .stat-label { font-family:var(--font-mono); font-size:10px; letter-spacing:3px; color:rgba(255,255,255,0.4); text-transform:uppercase; }
+    /* Red accent on first stat */
+    .stat-item:first-child .stat-number { color:var(--red); }
+
+    /* ── PRODUCTS ── */
+    .products-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; margin-top:72px; }
+    .product-card { background:var(--card); padding:52px 44px; position:relative; overflow:hidden; transition:transform 0.3s, box-shadow 0.3s; border:1px solid var(--border); }
+    .product-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--gold-dk),var(--gold-lt)); transform:scaleX(0); transform-origin:left; transition:transform 0.4s; }
+    .product-card-live::before { transform:scaleX(1); }
+    .product-card:hover::before { transform:scaleX(1); }
+    .product-card:hover { transform:translateY(-4px); box-shadow:0 16px 48px rgba(0,0,0,0.12); }
+    /* Red left border accent on hover */
+    .product-card::after { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--red); transform:scaleY(0); transform-origin:bottom; transition:transform 0.4s; }
+    .product-card:hover::after { transform:scaleY(1); }
+    .product-number { font-family:var(--font-mono); font-size:10px; letter-spacing:3px; color:var(--gold); opacity:0.5; margin-bottom:20px; }
+    .product-badge { display:inline-block; font-family:var(--font-mono); font-size:9px; letter-spacing:2px; text-transform:uppercase; padding:4px 12px; margin-bottom:18px; }
+    .badge-live { background:rgba(46,125,50,0.15); color:#4CAF50; border:1px solid rgba(46,125,50,0.3); }
+    .badge-soon { background:rgba(192,57,43,0.12); color:var(--red); border:1px solid rgba(192,57,43,0.25); }
+    .product-name { font-family:var(--font-display); font-size:34px; font-weight:700; letter-spacing:3px; color:var(--gold); margin-bottom:6px; }
+    .product-tagline { font-size:13px; color:var(--text3); letter-spacing:2px; font-style:italic; margin-bottom:24px; }
+    .product-desc { font-size:16px; color:var(--text2); line-height:1.8; margin-bottom:28px; }
+    .product-features { list-style:none; display:flex; flex-direction:column; gap:9px; }
+    .product-features li { font-family:var(--font-mono); font-size:12px; color:var(--text3); letter-spacing:0.5px; display:flex; align-items:center; gap:10px; }
+    .product-features li::before { content:''; width:14px; height:1px; background:var(--red); flex-shrink:0; }
+    .product-bg-text { position:absolute; bottom:-20px; right:-8px; font-family:var(--font-display); font-size:110px; font-weight:900; color:var(--gold); opacity:0.04; pointer-events:none; user-select:none; }
+
+    /* ── HOW IT WORKS ── */
+    .how-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; margin-top:72px; }
+    .step { display:flex; gap:24px; padding:28px 0; border-bottom:1px solid var(--border); }
+    .step:last-child { border-bottom:none; }
+    .step-num { font-family:var(--font-display); font-size:11px; font-weight:700; color:var(--gold); letter-spacing:2px; min-width:28px; padding-top:3px; }
+    .step-content h4 { font-family:var(--font-display); font-size:15px; font-weight:600; letter-spacing:2px; color:var(--text); margin-bottom:6px; }
+    .step-content p { font-size:15px; color:var(--text3); line-height:1.7; }
+    /* Red step accent */
+    .step:first-child .step-num { color:var(--red); }
+
+    /* Phone mockup — always dark */
+    .phone-mockup { background:#111827; border:1px solid rgba(201,168,76,0.2); border-radius:28px; padding:28px 22px; max-width:300px; margin:0 auto; box-shadow:0 32px 72px rgba(0,0,0,0.35); }
+    .phone-notch { width:72px; height:5px; background:rgba(255,255,255,0.1); border-radius:3px; margin:0 auto 24px; }
+    .chat-bubble { padding:11px 15px; border-radius:14px; font-size:13px; line-height:1.5; margin-bottom:8px; max-width:85%; font-family:var(--font-body); }
+    .chat-in { background:#1E2A4A; color:rgba(255,255,255,0.85); border:1px solid rgba(201,168,76,0.12); margin-right:auto; border-bottom-left-radius:3px; }
+    .chat-out { background:linear-gradient(135deg,#A07830,#C9A84C); color:#0A0F1E; margin-left:auto; border-bottom-right-radius:3px; font-weight:600; }
+    .chat-label { font-family:var(--font-mono); font-size:8px; letter-spacing:2px; color:rgba(255,255,255,0.22); margin-bottom:5px; text-transform:uppercase; }
+    .chat-label.r { text-align:right; }
+    .typing { display:flex; gap:4px; padding:11px 15px; background:#1E2A4A; border:1px solid rgba(201,168,76,0.12); border-radius:14px; border-bottom-left-radius:3px; width:fit-content; margin-top:4px; }
+    .dot { width:6px; height:6px; background:#C9A84C; border-radius:50%; animation:bounce 1.4s ease infinite; }
+    .dot:nth-child(2){animation-delay:0.2s;} .dot:nth-child(3){animation-delay:0.4s;}
+    /* Red capture badge */
+    .capture-badge { font-family:var(--font-mono); font-size:9px; letter-spacing:2px; text-transform:uppercase; background:rgba(192,57,43,0.2); color:var(--red); border:1px solid rgba(192,57,43,0.35); padding:5px 12px; display:inline-block; margin-top:16px; }
+
+    /* ── PRICING ── */
+    .pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-top:72px; }
+    .pricing-card { background:var(--card); border:1px solid var(--border); padding:44px 32px; position:relative; transition:transform 0.3s; }
+    .pricing-card:hover { transform:translateY(-6px); }
+    .pricing-card.featured { border-color:var(--gold); transform:translateY(-8px); }
+    .pricing-card.featured:hover { transform:translateY(-14px); }
+    .pricing-top { position:absolute; top:-1px; left:0; right:0; height:3px; }
+    .pricing-top-gold { background:linear-gradient(90deg,var(--gold-dk),var(--gold-lt)); }
+    .pricing-top-red { background:linear-gradient(90deg,var(--red-dk),var(--red)); }
+    .pricing-plan { font-family:var(--font-display); font-size:13px; letter-spacing:4px; color:var(--gold); margin-bottom:20px; }
+    .pricing-price { font-family:var(--font-display); font-size:50px; font-weight:700; color:var(--text); line-height:1; margin-bottom:4px; }
+    .pricing-price span { font-size:18px; color:var(--text3); font-weight:400; }
+    .pricing-period { font-family:var(--font-mono); font-size:10px; color:var(--text3); letter-spacing:2px; margin-bottom:28px; }
+    .pricing-div { width:100%; height:1px; background:var(--border); margin-bottom:24px; }
+    .pricing-features { list-style:none; display:flex; flex-direction:column; gap:12px; margin-bottom:36px; }
+    .pricing-features li { font-size:15px; color:var(--text2); display:flex; gap:10px; }
+    .pricing-features li::before { content:'✓'; color:var(--gold); font-weight:700; flex-shrink:0; }
+    .p-cta { display:block; text-align:center; font-family:var(--font-mono); font-size:11px; letter-spacing:2px; text-transform:uppercase; padding:15px; text-decoration:none; transition:all 0.25s; }
+    .p-outline { border:1px solid var(--border); color:var(--gold); }
+    .p-outline:hover { border-color:var(--gold); background:rgba(201,168,76,0.08); }
+    .p-solid { background:var(--gold); color:#0A0F1E; font-weight:600; }
+    .p-solid:hover { background:var(--gold-lt); }
+
+    /* ── ABOUT ── */
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:96px; align-items:center; }
+    .brand-values { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:40px; }
+    .brand-value { padding:22px; background:var(--bg2); border:1px solid var(--border); border-left:3px solid var(--gold); }
+    .brand-value.red-accent { border-left-color:var(--red); }
+    .brand-value h4 { font-family:var(--font-display); font-size:12px; letter-spacing:2px; color:var(--gold); margin-bottom:8px; }
+    .brand-value.red-accent h4 { color:var(--red); }
+    .brand-value p { font-size:14px; color:var(--text3); line-height:1.6; }
+
+    /* ── INVESTOR TEASER ── */
+    .investor-teaser { background:var(--bg); padding:100px 0; }
+    .teaser-inner { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+    .teaser-stats { display:grid; grid-template-columns:1fr 1fr; gap:2px; }
+    .teaser-stat { background:var(--card); border:1px solid var(--border); padding:32px 28px; }
+    .teaser-stat-num { font-family:var(--font-display); font-size:40px; font-weight:700; color:var(--gold); margin-bottom:6px; }
+    .teaser-stat-num.red { color:var(--red); }
+    .teaser-stat-label { font-family:var(--font-mono); font-size:9px; letter-spacing:2px; color:var(--text3); text-transform:uppercase; }
+    /* Red diagonal stripe on teaser */
+    .teaser-inner { position:relative; }
+
+    /* ── WAITLIST ── */
+    .waitlist-section { background:#0A0F1E; padding:120px 0; position:relative; overflow:hidden; }
+    .waitlist-section::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(192,57,43,0.08) 0%, transparent 50%); pointer-events:none; }
+    /* Red top border */
+    .waitlist-section::after { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,var(--red),transparent); }
+    .waitlist-wrap { max-width:640px; margin:0 auto; text-align:center; position:relative; }
+    .waitlist-wrap .section-eyebrow { color:#C9A84C; }
+    .waitlist-wrap .section-title { color:#F5F2EC; }
+    .waitlist-desc { font-size:18px; color:rgba(245,242,236,0.6); line-height:1.8; margin-top:8px; }
+    .waitlist-form { display:flex; margin-top:44px; }
+    .waitlist-input { flex:1; padding:18px 22px; background:rgba(255,255,255,0.05); border:1px solid rgba(201,168,76,0.25); border-right:none; color:#fff; font-family:var(--font-body); font-size:16px; outline:none; transition:border-color 0.2s; }
+    .waitlist-input::placeholder { color:rgba(255,255,255,0.25); }
+    .waitlist-input:focus { border-color:rgba(201,168,76,0.6); }
+    .waitlist-btn { font-family:var(--font-mono); font-size:11px; letter-spacing:2px; text-transform:uppercase; background:var(--red); color:#fff; border:none; padding:18px 32px; cursor:pointer; font-weight:600; transition:background 0.2s; white-space:nowrap; }
+    .waitlist-btn:hover { background:#E04535; }
+    .waitlist-note { font-family:var(--font-mono); font-size:10px; color:rgba(255,255,255,0.25); letter-spacing:1px; margin-top:18px; }
+
+    /* ── CONTACT ── */
+    .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; margin-top:72px; }
+    .contact-form { display:flex; flex-direction:column; gap:14px; }
+    .form-group { display:flex; flex-direction:column; gap:7px; }
+    .form-label { font-family:var(--font-mono); font-size:9px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; }
+    .form-input,.form-textarea { background:var(--card); border:1px solid var(--border); color:var(--text); font-family:var(--font-body); font-size:16px; padding:13px 17px; outline:none; transition:border-color 0.2s; resize:none; }
+    .form-input::placeholder,.form-textarea::placeholder { color:var(--text3); }
+    .form-input:focus,.form-textarea:focus { border-color:var(--gold); }
+    .form-submit { font-family:var(--font-mono); font-size:11px; letter-spacing:3px; text-transform:uppercase; background:var(--gold); color:#0A0F1E; border:none; padding:16px 32px; cursor:pointer; font-weight:600; transition:background 0.2s; align-self:flex-start; margin-top:6px; }
+    .form-submit:hover { background:var(--gold-lt); }
+    .contact-info { display:flex; flex-direction:column; gap:36px; }
+    .contact-item h4 { font-family:var(--font-display); font-size:12px; letter-spacing:3px; color:var(--gold); margin-bottom:7px; }
+    .contact-item p,.contact-item a { font-size:16px; color:var(--text3); text-decoration:none; transition:color 0.2s; }
+    .contact-item a:hover { color:var(--gold); }
+    /* Red divider between contact items */
+    .contact-item { padding-bottom:36px; border-bottom:1px solid var(--border); position:relative; }
+    .contact-item:last-child { border-bottom:none; padding-bottom:0; }
+    .contact-item::before { content:''; position:absolute; left:0; bottom:-1px; width:24px; height:1px; background:var(--red); }
+
+    /* ── FOOTER ── */
+    footer { background:#050810; border-top:1px solid rgba(201,168,76,0.15); padding:72px 0 36px; }
+    /* Red top accent */
+    footer::before { content:''; display:block; height:2px; background:linear-gradient(90deg,var(--red-dk),var(--red),var(--red-dk)); margin-bottom:0; }
+    .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:52px; margin-bottom:52px; }
+    .footer-brand p { font-size:14px; color:rgba(255,255,255,0.35); line-height:1.8; margin-top:14px; max-width:260px; }
+    .footer-col h5 { font-family:var(--font-mono); font-size:9px; letter-spacing:3px; color:#C9A84C; text-transform:uppercase; margin-bottom:18px; opacity:0.7; }
+    .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .footer-col ul a { font-size:14px; color:rgba(255,255,255,0.35); text-decoration:none; transition:color 0.2s; }
+    .footer-col ul a:hover { color:#C9A84C; }
+    .footer-bottom { border-top:1px solid rgba(255,255,255,0.06); padding-top:28px; display:flex; justify-content:space-between; align-items:center; }
+    .footer-bottom p { font-family:var(--font-mono); font-size:9px; letter-spacing:2px; color:rgba(255,255,255,0.2); text-transform:uppercase; }
+    .footer-rune { font-family:var(--font-display); font-size:13px; letter-spacing:4px; color:rgba(201,168,76,0.25); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes scrollPulse { 0%,100%{opacity:0.3;transform:scaleY(0.8)} 50%{opacity:1;transform:scaleY(1)} }
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.7s ease,transform 0.7s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .d1{transition-delay:0.1s} .d2{transition-delay:0.2s} .d3{transition-delay:0.3s} .d4{transition-delay:0.4s}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:960px){
+      nav{padding:0 24px;} .nav-links{display:none;} .container{padding:0 24px;}
+      .products-grid,.how-grid,.about-grid,.contact-grid,.pricing-grid,.teaser-inner{grid-template-columns:1fr;}
+      .stats-grid{grid-template-columns:repeat(2,1fr);} .stat-item{border-right:none;border-bottom:1px solid rgba(201,168,76,0.1);padding:24px;}
+      .footer-grid{grid-template-columns:1fr 1fr;} .pricing-card.featured{transform:none;}
+      .waitlist-form{flex-direction:column;} .waitlist-input{border-right:1px solid rgba(201,168,76,0.25);}
+      .hero-rune{display:none;} .scroll-fixed{display:none;}
+      .brand-values{grid-template-columns:1fr;} .teaser-stats{grid-template-columns:1fr 1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- FIXED SCROLL INDICATOR -->
+<div class="scroll-fixed" id="scrollIndicator">
+  <span class="scroll-fixed-label">Scroll</span>
+  <div class="scroll-fixed-line"></div>
+  <div class="scroll-fixed-dot"></div>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <svg class="nav-logo-icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#E8C96A"/><stop offset="100%" style="stop-color:#A07830"/></linearGradient></defs>
+      <path d="M52,18 L148,18 L172,42 L172,118 L100,178 L28,118 L28,42 Z" fill="#1A2340" stroke="url(#ng)" stroke-width="3"/>
+      <line x1="100" y1="148" x2="100" y2="56" stroke="url(#ng)" stroke-width="5"/>
+      <line x1="100" y1="78" x2="74" y2="102" stroke="url(#ng)" stroke-width="5"/>
+      <line x1="100" y1="78" x2="126" y2="102" stroke="url(#ng)" stroke-width="5"/>
+      <polygon points="100,50 93,64 107,64" fill="url(#ng)"/>
+      <path d="M86,162 L100,178 L114,162 Z" fill="#C0392B"/>
+    </svg>
+    <span class="nav-logo-text">RUNETECA</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#products">Products</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#waitlist" class="nav-cta">Join Waitlist</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-red-slash"></div>
+    <div class="hero-red-slash2"></div>
+  </div>
+  <div class="hero-rune hero-rune-1">ᛏ</div>
+  <div class="hero-rune hero-rune-2">ᚱ</div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">⟨ AI Automation Systems ⟩</p>
+    <h1 class="hero-title">RUNETECA</h1>
+    <p class="hero-subtitle">TECHNOLOGIES</p>
+    <div class="hero-divider"></div>
+    <p class="hero-desc">Every missed call is <em>lost revenue</em>. We build AI systems that respond <strong>instantly</strong>, capture critical information, and notify your team — before the opportunity disappears.</p>
+    <div class="hero-actions">
+      <a href="#waitlist" class="btn-red">Join the Waitlist</a>
+      <a href="#products" class="btn-secondary">See Our Products</a>
+    </div>
+    <div class="hero-accent-line"></div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal"><div class="stat-number">62%</div><div class="stat-label">Callers won't leave voicemail</div></div>
+      <div class="stat-item reveal d1"><div class="stat-number">$4K+</div><div class="stat-label">Avg. value per missed load</div></div>
+      <div class="stat-item reveal d2"><div class="stat-number">27%</div><div class="stat-label">Businesses miss 1 in 4 calls</div></div>
+      <div class="stat-item reveal d3"><div class="stat-number">&lt;10s</div><div class="stat-label">Our AI response time</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section id="products" class="section-dark">
+  <div class="container">
+    <span class="section-eyebrow reveal">Our Products</span>
+    <h2 class="section-title reveal">The Halla Suite</h2>
+    <div class="gold-line reveal"></div>
+    <p class="section-lead reveal">Four AI products built for businesses that run on communication. Each purpose-built for a specific industry, all powered by the same intelligent engine.</p>
+    <div class="products-grid">
+      <div class="product-card product-card-live reveal">
+        <div class="product-number">01 / 04</div>
+        <span class="product-badge badge-live">● Live</span>
+        <h3 class="product-name">LOADHALLA</h3>
+        <p class="product-tagline">Missed Load Recovery System</p>
+        <p class="product-desc">When a freight broker can't reach your drivers, Loadhalla responds instantly via SMS, captures every load detail through AI conversation, and alerts your dispatch team before the load is gone.</p>
+        <ul class="product-features">
+          <li>Instant SMS response to missed calls</li>
+          <li>AI captures pickup, delivery, rate & commodity</li>
+          <li>Dispatcher alerts with full load details</li>
+          <li>Complete conversation logging & analytics</li>
+        </ul>
+        <div class="product-bg-text">LH</div>
+      </div>
+      <div class="product-card product-card-live reveal d1">
+        <div class="product-number">02 / 04</div>
+        <span class="product-badge badge-live">● Live</span>
+        <h3 class="product-name">CALLHALLA</h3>
+        <p class="product-tagline">AI Receptionist Platform</p>
+        <p class="product-desc">Your AI receptionist that never sleeps. Callhalla handles missed calls for HVAC, dental, legal, auto repair, and any service business that lives and dies by the phone.</p>
+        <ul class="product-features">
+          <li>24/7 AI receptionist via SMS</li>
+          <li>Industry-specific conversation templates</li>
+          <li>Appointment capture & lead qualification</li>
+          <li>Instant team notifications</li>
+        </ul>
+        <div class="product-bg-text">CH</div>
+      </div>
+      <div class="product-card reveal d2">
+        <div class="product-number">03 / 04</div>
+        <span class="product-badge badge-soon">● Coming Soon</span>
+        <h3 class="product-name">LEADHALLA</h3>
+        <p class="product-tagline">Multi-Channel Lead Capture</p>
+        <p class="product-desc">Capture leads from every channel — phone, SMS, web forms, and paid ads — into one unified AI pipeline that qualifies, scores, and routes them to your team automatically.</p>
+        <ul class="product-features">
+          <li>Unified multi-channel lead inbox</li>
+          <li>AI lead scoring & qualification</li>
+          <li>CRM integration & auto-routing</li>
+          <li>Conversion analytics dashboard</li>
+        </ul>
+        <div class="product-bg-text">LH</div>
+      </div>
+      <div class="product-card reveal d3">
+        <div class="product-number">04 / 04</div>
+        <span class="product-badge badge-soon">● Coming Soon</span>
+        <h3 class="product-name">FLOWHALLA</h3>
+        <p class="product-tagline">Workflow Automation Assistant</p>
+        <p class="product-desc">An AI operations assistant that automates your internal workflows — scheduling, follow-ups, reminders, and task routing — so your team focuses on the work that matters.</p>
+        <ul class="product-features">
+          <li>Intelligent workflow automation</li>
+          <li>AI-powered task routing & follow-ups</li>
+          <li>Team scheduling & reminder systems</li>
+          <li>Operations analytics & reporting</li>
+        </ul>
+        <div class="product-bg-text">FH</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works" class="section-alt">
+  <div class="container">
+    <span class="section-eyebrow reveal">How It Works</span>
+    <h2 class="section-title reveal">From Missed Call to Captured Opportunity</h2>
+    <div class="gold-line reveal"></div>
+    <div class="how-grid">
+      <div>
+        <div class="step reveal"><div class="step-num" style="color:var(--red)">01</div><div class="step-content"><h4>Call Goes Unanswered</h4><p>A broker calls your business. Your team is unavailable. The call goes to voicemail — or rings out entirely.</p></div></div>
+        <div class="step reveal d1"><div class="step-num">02</div><div class="step-content"><h4>AI Responds in Seconds</h4><p>Within seconds, our AI sends a professional, conversational SMS to the caller — not a generic auto-reply.</p></div></div>
+        <div class="step reveal d2"><div class="step-num">03</div><div class="step-content"><h4>Natural Conversation Begins</h4><p>The AI asks exactly the right questions to capture every detail — rate, route, time, commodity, and contact info.</p></div></div>
+        <div class="step reveal d3"><div class="step-num">04</div><div class="step-content"><h4>Your Team Gets Notified</h4><p>The moment details are captured, your dispatcher gets an instant SMS and dashboard alert with everything needed to act.</p></div></div>
+        <div class="step reveal d4"><div class="step-num">05</div><div class="step-content"><h4>Zero Opportunities Lost</h4><p>Every conversation stored, searchable, and actionable. Your team picks up exactly where the AI left off.</p></div></div>
+      </div>
+      <div class="reveal d2">
+        <div class="phone-mockup">
+          <div class="phone-notch"></div>
+          <div class="chat-label">Broker</div>
+          <div class="chat-bubble chat-in">Hey, tried calling about a load. You available?</div>
+          <div class="chat-label r" style="margin-top:14px;">Loadhalla AI</div>
+          <div class="chat-bubble chat-out">Hey! Sorry we missed your call. Tell me about the load — pickup location and destination?</div>
+          <div class="chat-label" style="margin-top:14px;">Broker</div>
+          <div class="chat-bubble chat-in">Chicago to Dallas, tomorrow 6am. Flatbed, 42k lbs steel.</div>
+          <div class="chat-label r" style="margin-top:14px;">Loadhalla AI</div>
+          <div class="chat-bubble chat-out">Got it. What's the rate?</div>
+          <div class="chat-label" style="margin-top:14px;">Broker</div>
+          <div class="chat-bubble chat-in">$3,800 all in</div>
+          <div style="margin-top:14px;"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+          <div style="text-align:center;"><span class="capture-badge">● Load Captured</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="section-dark">
+  <div class="container">
+    <span class="section-eyebrow reveal">Pricing</span>
+    <h2 class="section-title reveal">Simple, Transparent Pricing</h2>
+    <div class="gold-line reveal"></div>
+    <p class="section-lead reveal">One missed load pays for months of Loadhalla. Start simple, scale as you grow.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <div class="pricing-top pricing-top-gold"></div>
+        <p class="pricing-plan">Starter</p>
+        <div class="pricing-price">$97<span>/mo</span></div>
+        <p class="pricing-period">Per phone number</p>
+        <div class="pricing-div"></div>
+        <ul class="pricing-features">
+          <li>1 Twilio phone number</li>
+          <li>200 AI conversations/mo</li>
+          <li>Basic dashboard & reporting</li>
+          <li>Email notifications</li>
+          <li>Email support</li>
+        </ul>
+        <a href="#waitlist" class="p-cta p-outline">Get Started</a>
+      </div>
+      <div class="pricing-card featured reveal d1">
+        <div class="pricing-top pricing-top-gold"></div>
+        <p class="pricing-plan">Growth</p>
+        <div class="pricing-price">$197<span>/mo</span></div>
+        <p class="pricing-period">Most popular</p>
+        <div class="pricing-div"></div>
+        <ul class="pricing-features">
+          <li>3 Twilio phone numbers</li>
+          <li>Unlimited AI conversations</li>
+          <li>Full dashboard + analytics</li>
+          <li>SMS & email notifications</li>
+          <li>Priority support</li>
+          <li>Conversation export</li>
+        </ul>
+        <a href="#waitlist" class="p-cta p-solid">Get Started</a>
+      </div>
+      <div class="pricing-card reveal d2">
+        <div class="pricing-top pricing-top-red"></div>
+        <p class="pricing-plan">Enterprise</p>
+        <div class="pricing-price">Custom</div>
+        <p class="pricing-period">Fleets & multi-location</p>
+        <div class="pricing-div"></div>
+        <ul class="pricing-features">
+          <li>Unlimited phone numbers</li>
+          <li>Multi-location support</li>
+          <li>CRM integrations</li>
+          <li>Custom AI workflows</li>
+          <li>Dedicated account manager</li>
+          <li>SLA guarantee</li>
+        </ul>
+        <a href="#contact" class="p-cta p-outline">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section-alt">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <span class="section-eyebrow reveal">Our Story</span>
+        <h2 class="section-title reveal">Built on Two Warrior Traditions</h2>
+        <div class="gold-line reveal"></div>
+        <p class="section-lead reveal" style="margin-bottom:24px;">Runeteca sits at the intersection of two ancient warrior cultures — the Vikings, who encoded knowledge into runes, and the Aztecs, who built the most sophisticated civilization in the Americas.</p>
+        <p style="font-size:17px;color:var(--text3);line-height:1.9;" class="reveal">Both shared the same belief: <em style="color:var(--gold);">knowledge is power, and speed wins battles.</em> That's what we build into every product — AI that thinks fast, captures everything, and never lets an opportunity escape.</p>
+        <div class="brand-values reveal">
+          <div class="brand-value"><h4>Speed</h4><p>Respond before your competitor knows the phone rang.</p></div>
+          <div class="brand-value red-accent"><h4>Precision</h4><p>Every detail captured. Nothing assumed. Nothing missed.</p></div>
+          <div class="brand-value red-accent"><h4>Reliability</h4><p>AI that works at 3am on a Sunday. No sick days.</p></div>
+          <div class="brand-value"><h4>Ownership</h4><p>Built by operators who know the cost of a missed call.</p></div>
+        </div>
+      </div>
+      <div class="reveal d2" style="display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 200 200" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sg3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#E8C96A"/><stop offset="100%" style="stop-color:#A07830"/></linearGradient>
+            <linearGradient id="shg3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1E2A4A"/><stop offset="100%" style="stop-color:#0A0F1E"/></linearGradient>
+            <linearGradient id="rg3" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#C0392B"/><stop offset="100%" style="stop-color:#7B1A10"/></linearGradient>
+            <filter id="glow3"><feGaussianBlur stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <path d="M52,18 L148,18 L172,42 L172,118 L100,178 L28,118 L28,42 Z" fill="#000" opacity="0.3" transform="translate(2,3)"/>
+          <path d="M52,18 L148,18 L172,42 L172,118 L100,178 L28,118 L28,42 Z" fill="url(#shg3)"/>
+          <path d="M52,18 L148,18 L172,42 L172,118 L100,178 L28,118 L28,42 Z" fill="none" stroke="url(#sg3)" stroke-width="2.5"/>
+          <rect x="34" y="26" width="132" height="5" fill="url(#sg3)" opacity="0.6"/>
+          <rect x="34" y="33" width="132" height="2" fill="#C0392B" opacity="0.85"/>
+          <polygon points="36,20 48,20 42,30" fill="url(#sg3)" opacity="0.7"/>
+          <polygon points="152,20 164,20 158,30" fill="url(#sg3)" opacity="0.7"/>
+          <rect x="31" y="46" width="3" height="68" fill="url(#sg3)" opacity="0.4"/>
+          <rect x="35" y="46" width="1.5" height="68" fill="#C0392B" opacity="0.65"/>
+          <rect x="166" y="46" width="3" height="68" fill="url(#sg3)" opacity="0.4"/>
+          <rect x="163.5" y="46" width="1.5" height="68" fill="#C0392B" opacity="0.65"/>
+          <path d="M62,34 L138,34 L158,52 L158,112 L100,162 L42,112 L42,52 Z" fill="none" stroke="url(#sg3)" stroke-width="1.5" opacity="0.4"/>
+          <polyline points="54,46 62,46 62,42 80,42 80,46 120,46 120,42 138,42 138,46 146,46" fill="none" stroke="url(#sg3)" stroke-width="1.5" opacity="0.55"/>
+          <polyline points="65,148 73,148 73,153 82,153 90,143 110,143 118,153 127,153 127,148 135,148" fill="none" stroke="url(#sg3)" stroke-width="1.5" opacity="0.55"/>
+          <line x1="100" y1="148" x2="100" y2="56" stroke="url(#sg3)" stroke-width="5" stroke-linecap="square" filter="url(#glow3)"/>
+          <line x1="100" y1="78" x2="74" y2="102" stroke="url(#sg3)" stroke-width="5" stroke-linecap="square" filter="url(#glow3)"/>
+          <line x1="100" y1="78" x2="126" y2="102" stroke="url(#sg3)" stroke-width="5" stroke-linecap="square" filter="url(#glow3)"/>
+          <polygon points="100,50 94,64 106,64" fill="url(#sg3)" filter="url(#glow3)"/>
+          <circle cx="58" cy="118" r="10" fill="none" stroke="url(#sg3)" stroke-width="1.5" opacity="0.5"/>
+          <circle cx="58" cy="118" r="6" fill="none" stroke="#C0392B" stroke-width="1.2" opacity="0.7"/>
+          <line x1="51" y1="111" x2="65" y2="125" stroke="url(#sg3)" stroke-width="1" opacity="0.5"/>
+          <line x1="65" y1="111" x2="51" y2="125" stroke="url(#sg3)" stroke-width="1" opacity="0.5"/>
+          <circle cx="142" cy="118" r="10" fill="none" stroke="url(#sg3)" stroke-width="1.5" opacity="0.5"/>
+          <circle cx="142" cy="118" r="6" fill="none" stroke="#C0392B" stroke-width="1.2" opacity="0.7"/>
+          <line x1="135" y1="111" x2="149" y2="125" stroke="url(#sg3)" stroke-width="1" opacity="0.5"/>
+          <line x1="149" y1="111" x2="135" y2="125" stroke="url(#sg3)" stroke-width="1" opacity="0.5"/>
+          <path d="M86,162 L100,178 L114,162 Z" fill="url(#rg3)" opacity="0.98"/>
+          <path d="M86,162 L100,178 L114,162 Z" fill="none" stroke="url(#sg3)" stroke-width="1.2"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INVESTOR TEASER -->
+<section class="investor-teaser">
+  <div class="container">
+    <div class="teaser-inner">
+      <div>
+        <span class="section-eyebrow reveal">For Investors</span>
+        <h2 class="section-title reveal">The Opportunity at a Glance</h2>
+        <div class="gold-line reveal"></div>
+        <div class="red-line reveal"></div>
+        <p class="section-lead reveal" style="margin-bottom:36px;">We're building the communication layer 28M+ US small businesses are missing. The market, timing, and technology have converged — and we're first to execute at this level.</p>
+        <div class="reveal">
+          <a href="investors.html" class="btn-primary" style="margin-right:16px;">Full Investor Page</a>
+          <a href="mailto:investors@runeteca.com" class="btn-secondary">Request Deck</a>
+        </div>
+      </div>
+      <div class="teaser-stats reveal d2">
+        <div class="teaser-stat"><div class="teaser-stat-num">$900B</div><div class="teaser-stat-label">US Trucking Market</div></div>
+        <div class="teaser-stat"><div class="teaser-stat-num red">$1M+</div><div class="teaser-stat-label">ARR at 500 customers</div></div>
+        <div class="teaser-stat"><div class="teaser-stat-num">500K+</div><div class="teaser-stat-label">Carrier addressable market</div></div>
+        <div class="teaser-stat"><div class="teaser-stat-num red">80%</div><div class="teaser-stat-label">Infra shared across products</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section id="waitlist" class="waitlist-section">
+  <div class="container">
+    <div class="waitlist-wrap">
+      <span class="section-eyebrow reveal">Early Access</span>
+      <h2 class="section-title reveal" style="color:#F5F2EC;">Be First. Miss Nothing.</h2>
+      <div class="gold-line reveal" style="margin:24px auto;"></div>
+      <p class="waitlist-desc reveal">Loadhalla is launching soon. Join the waitlist for early access, founding member pricing, and first priority onboarding.</p>
+      <div class="waitlist-form reveal">
+        <input type="email" class="waitlist-input" placeholder="your@email.com" id="wl-email"/>
+        <button class="waitlist-btn" id="wl-btn">Join Waitlist</button>
+      </div>
+      <p class="waitlist-note reveal">No spam. No credit card. Cancel any time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section-dark">
+  <div class="container">
+    <span class="section-eyebrow reveal">Get In Touch</span>
+    <h2 class="section-title reveal">Let's Talk</h2>
+    <div class="gold-line reveal"></div>
+    <div class="contact-grid">
+      <div class="contact-form reveal">
+        <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" placeholder="Your name"/></div>
+        <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" placeholder="your@email.com"/></div>
+        <div class="form-group"><label class="form-label">I am a...</label><input type="text" class="form-input" placeholder="Trucking company / Investor / Partner / Other"/></div>
+        <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" rows="5" placeholder="Tell us about your business..."></textarea></div>
+        <button class="form-submit" id="form-btn">Send Message</button>
+      </div>
+      <div class="contact-info reveal d2">
+        <div class="contact-item"><h4>Email</h4><a href="mailto:hello@runeteca.com">hello@runeteca.com</a></div>
+        <div class="contact-item"><h4>For Investors</h4><p>Request our full pitch deck, financial projections, and technical architecture overview.</p><br/><a href="mailto:investors@runeteca.com" style="color:var(--red);">investors@runeteca.com</a></div>
+        <div class="contact-item"><h4>For Trucking Companies</h4><p>Tell us about your fleet size and we'll set up a personalized Loadhalla demo.</p></div>
+        <div class="contact-item"><h4>Website</h4><a href="https://runeteca.com">runeteca.com</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span style="font-family:var(--font-display);font-size:20px;letter-spacing:4px;color:#C9A84C;">RUNETECA</span>
+        <p>AI automation systems built for businesses that can't afford to miss a call. Ancient wisdom. Modern technology.</p>
+      </div>
+      <div class="footer-col"><h5>Products</h5><ul><li><a href="#products">Loadhalla</a></li><li><a href="#products">Callhalla</a></li><li><a href="#products">Leadhalla</a></li><li><a href="#products">Flowhalla</a></li></ul></div>
+      <div class="footer-col"><h5>Company</h5><ul><li><a href="#about">About</a></li><li><a href="investors.html">Investors</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#contact">Contact</a></li></ul></div>
+      <div class="footer-col"><h5>Legal</h5><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li><li><a href="#">Cookie Policy</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Runeteca Technologies LLC — All rights reserved</p>
+      <span class="footer-rune">ᛏ ᚱ ᚢ ᚾ</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Navbar
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 40));
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold:0.1, rootMargin:'0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Waitlist
+  document.getElementById('wl-btn').addEventListener('click', () => {
+    const email = document.getElementById('wl-email').value.trim();
+    const btn = document.getElementById('wl-btn');
+    const input = document.getElementById('wl-email');
+    if(!email || !email.includes('@')) { input.style.borderColor='rgba(192,57,43,0.7)'; input.placeholder='Please enter a valid email'; return; }
+    btn.textContent = "✓ You're on the list"; btn.style.background='#2E7D32';
+    input.disabled=true; btn.disabled=true;
+  });
+
+  // Contact
+  document.getElementById('form-btn').addEventListener('click', () => {
+    const btn = document.getElementById('form-btn');
+    btn.textContent='✓ Message Sent'; btn.style.background='#2E7D32';
+  });
+</script>
+</body>
+</html>
