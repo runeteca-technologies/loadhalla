@@ -77,7 +77,7 @@ Return ONLY a JSON object with these fields (use null if not found):
 }
 
 // ─── MAIN SMS HANDLER ─────────────────────────────────────────────
-export async function POST(request) {
+
   try {
     const formData = await request.formData();
     const incomingMessage = formData.get('Body');

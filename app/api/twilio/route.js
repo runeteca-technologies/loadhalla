@@ -15,7 +15,7 @@ export async function POST(request) {
     process.env.TWILIO_AUTH_TOKEN
   );
 
-export async function POST(request) {
+
   try {
     // Parse the incoming Twilio webhook data
     const formData = await request.formData();
