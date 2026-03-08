@@ -1,23 +1,24 @@
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
-import { createClient } from '@supabase/supabase-js';
-import twilio from 'twilio';
-import OpenAI from 'openai';
+export async function POST(request) {
+  const { createClient } = await import('@supabase/supabase-js');
+  const twilio = await import('twilio');
+  const OpenAI = await import('openai');
 
-// Initialize services
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
 
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+  const twilioClient = twilio.default(
+    process.env.TWILIO_ACCOUNT_SID,
+    process.env.TWILIO_AUTH_TOKEN
+  );
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+  const openai = new OpenAI.default({
+    apiKey: process.env.OPENAI_API_KEY
+  });
 
 // ─── AI SYSTEM PROMPT ────────────────────────────────────────────
 const SYSTEM_PROMPT = `You are a professional trucking dispatcher assistant for a carrier company. 

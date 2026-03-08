@@ -1,19 +1,19 @@
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
-import { createClient } from '@supabase/supabase-js';
-import twilio from 'twilio';
+export async function POST(request) {
+  const { createClient } = await import('@supabase/supabase-js');
+  const twilio = await import('twilio');
 
-// Initialize Supabase
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
 
-// Initialize Twilio
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+  const twilioClient = twilio.default(
+    process.env.TWILIO_ACCOUNT_SID,
+    process.env.TWILIO_AUTH_TOKEN
+  );
 
 export async function POST(request) {
   try {
