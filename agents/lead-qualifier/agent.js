@@ -6,6 +6,7 @@ import { createClient } from '@supabase/supabase-js'
 import dotenv from 'dotenv'
 dotenv.config({ path: '.env.local' })
 import Anthropic from "@anthropic-ai/sdk";
+import { IncomingWebhook } from '@slack/webhook'
 
 const FOUNDER = {
   name: "Victor Christiansen",
@@ -17,6 +18,8 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
+
+const webhook = new IncomingWebhook(process.env.SLACK_WEBHOOK_URL)
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -116,6 +119,71 @@ function executeTool(toolName, toolInput) {
   // (this is valid — Claude uses tools to STRUCTURE its thinking)
   // In v2, these would call real external services
   return toolInput;
+}
+
+async function sendSlackApproval(lead, report) {
+  await webhook.send({
+    blocks: [
+      {
+        type: "header",
+        text: {
+          type: "plain_text",
+          text: `🎯 New Lead Qualified — ${report.score?.score}/10`,
+        }
+      },
+      {
+        type: "section",
+        fields: [
+          { type: "mrkdwn", text: `*Name:*\n${lead.name}` },
+          { type: "mrkdwn", text: `*Company:*\n${lead.company}` },
+          { type: "mrkdwn", text: `*Industry:*\n${lead.industry}` },
+          { type: "mrkdwn", text: `*Source:*\n${lead.source}` },
+          { type: "mrkdwn", text: `*Score:*\n${report.score?.score}/10` },
+          { type: "mrkdwn", text: `*Urgency:*\n${report.follow_up?.urgency}` },
+        ]
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `*Reasoning:*\n${report.score?.reasoning}`
+        }
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `*Recommended Products:*\n${report.use_case?.recommended_products.join(', ')}`
+        }
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `*Pain Points:*\n${report.use_case?.pain_points_identified.map(p => `• ${p}`).join('\n')}`
+        }
+      },
+      {
+        type: "divider"
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `*Draft Email:*\n*Subject:* ${report.follow_up?.subject}\n\n${report.follow_up?.body}`
+        }
+      },
+      {
+        type: "context",
+        elements: [
+          {
+            type: "mrkdwn",
+            text: `Lead ID: ${lead.id} | Approve or skip this lead in your terminal`
+          }
+        ]
+      }
+    ]
+  })
 }
 
 // ============================================================
@@ -241,6 +309,21 @@ Source: ${lead.source}`,
 // TEST IT — Simulate a real inbound lead for Runeteca
 // ============================================================
 
+import readline from 'readline'
+
+function askForApproval(leadName) {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    })
+    rl.question(`\n👋 Approve email for ${leadName}? (y/n): `, (answer) => {
+      rl.close()
+      resolve(answer.toLowerCase() === 'y')
+    })
+  })
+}
+
 async function main() {
   // Pull all unqualified leads from Supabase
   const { data: leads, error } = await supabase
@@ -263,11 +346,17 @@ async function main() {
   for (const lead of leads) {
     const report = await runLeadQualifierAgent(lead)
 
-    // Write results back to Supabase
+    // Send to Slack
+    await sendSlackApproval(lead, report)
+    console.log(`\n📨 Sent to Slack for approval`)
+
+    // Terminal approval for now — will swap to Slack buttons next
+    const approved = await askForApproval(lead.name)
+
     const { error: updateError } = await supabase
       .from('leads')
       .update({
-        status: 'qualified',
+        status: approved ? 'qualified' : 'disqualified',
         ai_score: report.score?.score,
         ai_reasoning: report.score?.reasoning,
         ai_recommended_products: report.use_case?.recommended_products,
@@ -282,7 +371,7 @@ async function main() {
     if (updateError) {
       console.error(`Failed to update lead ${lead.name}:`, updateError)
     } else {
-      console.log(`✅ Lead ${lead.name} qualified and saved to Supabase`)
+      console.log(`✅ Lead ${lead.name} marked as ${approved ? 'qualified' : 'disqualified'}`)
     }
   }
 }
