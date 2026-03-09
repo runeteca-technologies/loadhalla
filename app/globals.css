@@ -1,26 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap');
+
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy:        #0a0f1e;
+  --navy-light:  #111827;
+  --navy-mid:    #1a2236;
+  --navy-border: #1e2d45;
+  --gold:        #c9a84c;
+  --gold-light:  #e8c96a;
+  --gold-dim:    #8a6f32;
+  --red:         #8b1a1a;
+  --red-bright:  #c0392b;
+  --text-primary:   #f0e6c8;
+  --text-secondary: #8a9ab5;
+  --text-muted:     #4a5568;
+  --success:     #2d6a4f;
+  --success-text:#52b788;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  background-color: var(--navy);
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  height: 100%;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+h1, h2, h3, .font-display {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.04em;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--navy); }
+::-webkit-scrollbar-thumb { background: var(--navy-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
+
+/* Gold divider utility */
+.rune-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
 }
