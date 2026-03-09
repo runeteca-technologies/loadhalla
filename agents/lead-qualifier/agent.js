@@ -247,7 +247,7 @@ Source: ${lead.source}`,
     console.log(`\n🔄 Agent loop iteration ${iteration}`);
 
     const response = await client.messages.create({
-      model: "claude-opus-4-5",
+      model: "claude-sonnet-4-6",
       max_tokens: 4096,
       system: systemPrompt,
       tools: tools,
