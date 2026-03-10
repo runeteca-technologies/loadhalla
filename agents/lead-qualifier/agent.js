@@ -380,7 +380,7 @@ async function main() {
     if (updateError) {
       console.error(`Failed to update lead ${lead.name}:`, updateError)
     } else {
-      console.log(`✅ Lead ${lead.name} marked as ${approved ? 'qualified' : 'disqualified'}`)
+      console.log(`✅ Lead ${lead.name} sent to Slack for approval`)
     }
   }
 }
