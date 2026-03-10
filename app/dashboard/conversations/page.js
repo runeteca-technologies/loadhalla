@@ -1,5 +1,6 @@
 'use client';
 
+import { supabase } from '@/lib/supabase';
 import { useEffect, useState } from 'react';
 
 // ─── STATUS CONFIG ────────────────────────────────────────────────
@@ -273,6 +274,28 @@ export default function ConversationsPage() {
       })
       .catch(e => setError(e.message))
       .finally(() => setLoading(false));
+
+    const channel = supabase
+      .channel('conversations_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'conversations',
+        },
+        (payload) => {
+          if (payload.eventType === 'INSERT') {
+            setConversations(prev => [payload.new, ...prev]);
+          }
+          if (payload.eventType === 'UPDATE') {
+            setConversations(prev => prev.map(c => c.id === payload.new.id ? { ...c, ...payload.new } : c));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => supabase.removeChannel(channel);
   }, []);
 
   const filtered = filter === 'all'

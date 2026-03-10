@@ -1,5 +1,6 @@
 'use client';
 
+import { supabase } from '@/lib/supabase';
 import { useEffect, useState } from 'react';
 
 const STATUS_CONFIG = {
@@ -234,7 +235,38 @@ export default function DashboardPage() {
     }
   };
 
-  useEffect(() => { fetchLoads(); }, []);
+  useEffect(() => {
+    fetchLoads();
+
+    // Realtime subscription — fires when a new load is inserted
+    const channel = supabase
+      .channel('load_opportunities_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'load_opportunities',
+        },
+        (payload) => {
+          if (payload.eventType === 'INSERT') {
+            setLoads(prev => [payload.new, ...prev]);
+          }
+          if (payload.eventType === 'UPDATE') {
+            setLoads(prev => prev.map(l => l.id === payload.new.id ? payload.new : l));
+          }
+          if (payload.eventType === 'DELETE') {
+            setLoads(prev => prev.filter(l => l.id !== payload.old.id));
+          }
+        }
+      )
+      .subscribe((status) => {
+        console.log('Realtime status:', status);
+      });
+
+    // Cleanup on unmount
+    return () => supabase.removeChannel(channel);
+  }, []);
 
   const handleStatusChange = async (loadId, newStatus) => {
     await fetch(`/api/loads/${loadId}`, {
