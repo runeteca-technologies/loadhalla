@@ -3,10 +3,11 @@
 import { useEffect, useState } from 'react';
 
 const STATUS_CONFIG = {
-  new:      { label: 'New',      color: 'var(--gold)',         bg: 'rgba(201,168,76,0.1)' },
-  reviewed: { label: 'Reviewed', color: 'var(--text-secondary)',bg: 'rgba(138,154,181,0.1)' },
-  booked:   { label: 'Booked',   color: 'var(--success-text)', bg: 'rgba(82,183,136,0.1)' },
-  passed:   { label: 'Passed',   color: 'var(--text-muted)',   bg: 'rgba(74,85,104,0.1)' },
+  new:       { label: 'New',       color: 'var(--gold)',         bg: 'rgba(201,168,76,0.1)' },
+  reviewing: { label: 'Reviewing', color: '#2980b9',             bg: 'rgba(41,128,185,0.1)' },
+  accepted:  { label: 'Accepted',  color: 'var(--success-text)', bg: 'rgba(82,183,136,0.1)' },
+  declined:  { label: 'Declined',  color: 'var(--red-bright)',   bg: 'rgba(192,57,43,0.1)' },
+  expired:   { label: 'Expired',   color: 'var(--text-muted)',   bg: 'rgba(74,85,104,0.1)' },
 };
 
 function StatusBadge({ status }) {
@@ -189,7 +190,7 @@ function LoadDetail({ load, onClose, onStatusChange }) {
 
         {/* Status actions */}
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {['new', 'reviewed', 'booked', 'passed'].map(s => (
+          {['new', 'reviewing', 'accepted', 'declined', 'expired'].map(s => (
             <button key={s} onClick={() => onStatusChange(load.id, s)} style={{
               padding: '8px 16px',
               borderRadius: '6px',
@@ -276,7 +277,7 @@ export default function DashboardPage() {
 
       {/* Filter tabs */}
       <div style={{ display: 'flex', gap: '4px', marginBottom: '20px', borderBottom: '1px solid var(--navy-border)', paddingBottom: '0' }}>
-        {['all', 'new', 'reviewed', 'booked', 'passed'].map(f => (
+        {['all', 'new', 'reviewing', 'accepted', 'declined', 'expired'].map(f => (
           <button key={f} onClick={() => setFilter(f)} style={{
             padding: '8px 16px',
             background: 'none',
