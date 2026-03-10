@@ -174,11 +174,21 @@ async function sendSlackApproval(lead, report) {
         }
       },
       {
-        type: "context",
+        type: "actions",
         elements: [
           {
-            type: "mrkdwn",
-            text: `Lead ID: ${lead.id} | Approve or skip this lead in your terminal`
+            type: "button",
+            text: { type: "plain_text", text: "✅ Approve" },
+            style: "primary",
+            action_id: "approve_lead",
+            value: lead.id
+          },
+          {
+            type: "button",
+            text: { type: "plain_text", text: "❌ Skip" },
+            style: "danger",
+            action_id: "skip_lead",
+            value: lead.id
           }
         ]
       }
@@ -351,12 +361,11 @@ async function main() {
     console.log(`\n📨 Sent to Slack for approval`)
 
     // Terminal approval for now — will swap to Slack buttons next
-    const approved = await askForApproval(lead.name)
 
     const { error: updateError } = await supabase
-      .from('leads')
-      .update({
-        status: approved ? 'qualified' : 'disqualified',
+    .from('leads')
+    .update({
+        status: 'pending_approval',
         ai_score: report.score?.score,
         ai_reasoning: report.score?.reasoning,
         ai_recommended_products: report.use_case?.recommended_products,
